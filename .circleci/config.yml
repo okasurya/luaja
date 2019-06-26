@@ -8,15 +8,8 @@ jobs:
     
     steps:
       - checkout
-      - restored_cache:
-          keys:
-            - luaja-cache
       - run: go mod init
       - run: go mod tidy
-      - save_cache:
-          key: luaja-cache
-          paths:
-            - "/go/pkg"
       - run: go test ./...
 
 
