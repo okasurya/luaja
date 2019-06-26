@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12
-    working_directory: /luaja
+    working_directory: /go/src/github.com/payfazz/luaja
     
     steps:
       - checkout
