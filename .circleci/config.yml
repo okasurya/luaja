@@ -8,8 +8,7 @@ jobs:
     
     steps:
       - checkout
-      - run: go mod init
-      - run: go mod tidy
+      - run: go mod download
       - run: go test ./...
 
 
