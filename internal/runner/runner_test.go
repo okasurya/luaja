@@ -58,6 +58,21 @@ func TestOutputString(t *testing.T) {
 	}
 }
 
+func TestOutputNumber(t *testing.T) {
+	ctx := context.Background()
+	script := `
+	return 5
+	`
+	var output float64
+	err := RunScript(ctx, script, nil, &output)
+	if err != nil {
+		t.Error(err)
+	}
+	if output != 5 {
+		t.Errorf("failed, expected 5, actual %f", output)
+	}
+}
+
 func TestInputLua(t *testing.T) {
 	ctx := context.Background()
 	script := `

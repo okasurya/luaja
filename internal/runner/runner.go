@@ -44,6 +44,14 @@ func convertString(luastring lua.LString, output interface{}) error {
 	return nil
 }
 
+func convertNumber(luanumber lua.LNumber, output interface{}) error {
+	if err := checkIfTypeSame(float64(luanumber), output); err != nil {
+		return err
+	}
+	reflect.ValueOf(output).Elem().Set(reflect.ValueOf(float64(luanumber)))
+	return nil
+}
+
 func RunScript(context context.Context, script string, input interface{}, output interface{}) error {
 	L := lua.NewState()
 	defer L.Close()
@@ -60,8 +68,12 @@ func RunScript(context context.Context, script string, input interface{}, output
 			return convertTable(lv.(*lua.LTable), output)
 		case lua.LTString:
 			return convertString(lv.(lua.LString), output)
+		case lua.LTNumber:
+			return convertNumber(lv.(lua.LNumber), output)
 		case lua.LTUserData:
 			return convertUserData(lv.(*lua.LUserData), output)
+		default:
+			return fmt.Errorf("output type %s not supported", lv.Type())
 		}
 
 	}
