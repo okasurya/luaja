@@ -2,7 +2,7 @@ package runner
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/yuin/gluamapper"
@@ -17,11 +17,30 @@ func convertTable(table *lua.LTable, output interface{}) error {
 	return nil
 }
 
+func checkIfTypeSame(result interface{}, output interface{}) error {
+	if reflect.TypeOf(output).Elem().Name() != reflect.TypeOf(result).Name() {
+		return fmt.Errorf(
+			"type of output is %s, but the result is %s",
+			reflect.TypeOf(output).Elem().Name(),
+			reflect.TypeOf(result).Name(),
+		)
+	}
+	return nil
+}
+
 func convertUserData(userData *lua.LUserData, output interface{}) error {
-	if reflect.TypeOf(output).Elem().Name() != reflect.TypeOf(userData.Value).Name() {
-		return errors.New("type of output is not same")
+	if err := checkIfTypeSame(userData.Value, output); err != nil {
+		return err
 	}
 	reflect.ValueOf(output).Elem().Set(reflect.ValueOf(userData.Value))
+	return nil
+}
+
+func convertString(luastring lua.LString, output interface{}) error {
+	if err := checkIfTypeSame(string(luastring), output); err != nil {
+		return err
+	}
+	reflect.ValueOf(output).Elem().Set(reflect.ValueOf(string(luastring)))
 	return nil
 }
 
@@ -39,6 +58,8 @@ func RunScript(context context.Context, script string, input interface{}, output
 		switch lv.Type() {
 		case lua.LTTable:
 			return convertTable(lv.(*lua.LTable), output)
+		case lua.LTString:
+			return convertString(lv.(lua.LString), output)
 		case lua.LTUserData:
 			return convertUserData(lv.(*lua.LUserData), output)
 		}

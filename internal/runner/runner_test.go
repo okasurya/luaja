@@ -42,6 +42,22 @@ func TestOutputLua(t *testing.T) {
 
 }
 
+func TestOutputString(t *testing.T) {
+	ctx := context.Background()
+	script := `
+	return "hello"
+	`
+	var output string
+	err := RunScript(ctx, script, nil, &output)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if output != "hello" {
+		t.Errorf("failed, expected hello, actual %s", output)
+	}
+}
+
 func TestInputLua(t *testing.T) {
 	ctx := context.Background()
 	script := `
