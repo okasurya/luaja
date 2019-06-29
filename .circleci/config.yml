@@ -4,11 +4,11 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "ON"
     working_directory: /luaja
-    
+
     steps:
       - checkout
-      - run: GO111MODULE=on go mod download
+      - run: go mod download
       - run: go test ./... -cover
-
-
