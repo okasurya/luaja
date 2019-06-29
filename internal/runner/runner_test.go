@@ -86,6 +86,14 @@ func TestOutputBoolean(t *testing.T) {
 	}
 }
 
+func TestOutputNotPointer(t *testing.T) {
+	ctx := context.Background()
+	script := `return 5`
+	var output float64
+	err := RunScript(ctx, script, nil, output)
+	require.NotNil(t, err)
+}
+
 func TestInputLua(t *testing.T) {
 	ctx := context.Background()
 	script := `
