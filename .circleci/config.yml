@@ -8,7 +8,7 @@ jobs:
     
     steps:
       - checkout
-      - run: go mod download
+      - run: GO111MODULE=on go mod download
       - run: go test ./... -cover
 
 
