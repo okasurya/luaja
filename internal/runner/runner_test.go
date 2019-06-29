@@ -73,6 +73,19 @@ func TestOutputNumber(t *testing.T) {
 	}
 }
 
+func TestOutputBoolean(t *testing.T) {
+	ctx := context.Background()
+	script := `return true`
+	var output bool
+	err := RunScript(ctx, script, nil, &output)
+	if err != nil {
+		t.Error(err)
+	}
+	if output != true {
+		t.Errorf("failed, expected true, actual %v", output)
+	}
+}
+
 func TestInputLua(t *testing.T) {
 	ctx := context.Background()
 	script := `

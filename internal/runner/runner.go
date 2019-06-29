@@ -52,6 +52,14 @@ func convertNumber(luanumber lua.LNumber, output interface{}) error {
 	return nil
 }
 
+func convertBoolean(luabool lua.LBool, output interface{}) error {
+	if err := checkIfTypeSame(bool(luabool), output); err != nil {
+		return err
+	}
+	reflect.ValueOf(output).Elem().Set(reflect.ValueOf(bool(luabool)))
+	return nil
+}
+
 func RunScript(context context.Context, script string, input interface{}, output interface{}) error {
 	L := lua.NewState()
 	defer L.Close()
@@ -70,6 +78,8 @@ func RunScript(context context.Context, script string, input interface{}, output
 			return convertString(lv.(lua.LString), output)
 		case lua.LTNumber:
 			return convertNumber(lv.(lua.LNumber), output)
+		case lua.LTBool:
+			return convertBoolean(lv.(lua.LBool), output)
 		case lua.LTUserData:
 			return convertUserData(lv.(*lua.LUserData), output)
 		default:
