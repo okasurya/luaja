@@ -3,6 +3,7 @@ module github.com/payfazz/luaja
 go 1.12
 
 require (
+	github.com/lib/pq v1.1.1
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/yuin/gluamapper v0.0.0-20150323120927-d836955830e7
