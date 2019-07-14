@@ -1,4 +1,4 @@
-package repository
+package migration
 
 import (
 	"database/sql"
@@ -35,7 +35,7 @@ func TestGetCurrentVersion(t *testing.T) {
 		t.Error(err)
 	}
 
-	if version != 0 {
-		t.Errorf("failed, expected 0, actual %d", version)
+	if expectedVersion := len(migration); version != expectedVersion {
+		t.Errorf("failed, expected %d, actual %d", expectedVersion, version)
 	}
 }

@@ -1,4 +1,4 @@
-package repository
+package migration
 
 import (
 	"database/sql"
@@ -6,13 +6,32 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var migration = [...]string{Query01}
+
+// DoMigrate ...
 func DoMigrate(db *sql.DB) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
 	}
-	if _, err = tx.Exec("SELECT 1"); err != nil {
+
+	currentVersion, err := getCurrentVersion(tx)
+	if err != nil {
 		return err
+	}
+	codeVersion := getCodeVersion()
+
+	for version := currentVersion; version < codeVersion; version++ {
+		_, err = tx.Exec(migration[version])
+		if err != nil {
+			return err
+		}
+		_, err = tx.Exec(`
+    		UPDATE meta SET VALUE = $1 WHERE key = 'db-version'
+		`, version+1)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = tx.Commit()
@@ -50,4 +69,8 @@ func getCurrentVersion(tx *sql.Tx) (int, error) {
 		}
 	}
 	return version, nil
+}
+
+func getCodeVersion() int {
+	return len(migration)
 }
