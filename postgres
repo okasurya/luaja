@@ -1,0 +1,11 @@
+#!/usr/bin/env docker.sh
+
+name=postgres
+image=postgres:11
+opts="
+  -p 5432:5432
+  -e POSTGRES_PASSWORD=password
+  -e POSTGRES_USER=luaja
+  -e POSTGRES_DB=luaja
+  -v $dir/pgdata:/var/lib/postgresql/data
+"
