@@ -9,3 +9,8 @@ opts="
   -e POSTGRES_DB=luaja
   -v $dir/pgdata:/var/lib/postgresql/data
 "
+
+command_killme() {
+  rm -rf $dir/pgdata
+  "$dir/postgres" restart
+}
